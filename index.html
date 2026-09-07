@@ -9,201 +9,65 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #F6EFDC;
-    --paper-line: #C7D6E3;
-    --margin-line: #E7A3A3;
-    --ink: #263349;
-    --ink-light: #66738A;
-    --tape-blue: #BEE0EE;
-    --tape-blue-dark: #7FAEC2;
-    --tape-pink: #F5C7CF;
-    --tape-pink-dark: #D98FA0;
-    --highlight: #FBD65D;
-    --error: #B33B3B;
-    --success: #3E7A4C;
-    --hole: #D9CFB2;
+    --paper: #F6EFDC; --paper-line: #C7D6E3; --margin-line: #E7A3A3;
+    --ink: #263349; --ink-light: #66738A;
+    --tape-blue: #BEE0EE; --tape-blue-dark: #7FAEC2;
+    --tape-pink: #F5C7CF; --tape-pink-dark: #D98FA0;
+    --highlight: #FBD65D; --error: #B33B3B; --success: #3E7A4C; --hole: #D9CFB2;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     font-family:'Nunito', sans-serif;
     background:
-      repeating-linear-gradient(
-        var(--paper) 0px, var(--paper) 31px,
-        var(--paper-line) 31px, var(--paper-line) 32px
-      );
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 31px, var(--paper-line) 31px, var(--paper-line) 32px);
     background-color:var(--paper);
     color:var(--ink);
     min-height:100vh;
-    padding:18px 20px 120px 58px;
+    padding:18px 20px 130px 58px;
     position:relative;
   }
-  /* spiral binding holes */
-  .holes{
-    position:fixed;
-    top:0; bottom:0; left:0;
-    width:34px;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    align-items:center;
-    gap:34px;
-    padding-top:26px;
-    z-index:2;
-  }
-  .holes span{
-    width:14px; height:14px;
-    border-radius:50%;
-    background:var(--paper);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25), 0 0 0 2px var(--hole);
-  }
-  /* red margin line */
-  body::before{
-    content:"";
-    position:fixed;
-    top:0; bottom:0; left:46px;
-    width:2px;
-    background:var(--margin-line);
-    z-index:1;
-  }
+  .holes{ position:fixed; top:0; bottom:0; left:0; width:34px; display:flex; flex-direction:column; justify-content:flex-start; align-items:center; gap:34px; padding-top:26px; z-index:2; }
+  .holes span{ width:14px; height:14px; border-radius:50%; background:var(--paper); box-shadow: inset 0 1px 3px rgba(0,0,0,0.25), 0 0 0 2px var(--hole); }
+  body::before{ content:""; position:fixed; top:0; bottom:0; left:46px; width:2px; background:var(--margin-line); z-index:1; }
 
-  .tape-label{
-    display:inline-block;
-    font-family:'Caveat', cursive;
-    font-size:15px;
-    color:var(--ink-light);
-    background:var(--highlight);
-    padding:3px 12px;
-    transform:rotate(-2deg);
-    box-shadow:1px 2px 3px rgba(0,0,0,0.15);
-    margin-bottom:10px;
-  }
-  h1{
-    font-family:'Caveat', cursive;
-    font-weight:700;
-    font-size:38px;
-    line-height:1;
-    margin:0 0 22px;
-    transform:rotate(-0.6deg);
-    color:var(--ink);
-  }
+  .tape-label{ display:inline-block; font-family:'Caveat', cursive; font-size:15px; color:var(--ink-light); background:var(--highlight); padding:3px 12px; transform:rotate(-2deg); box-shadow:1px 2px 3px rgba(0,0,0,0.15); margin-bottom:10px; }
+  h1{ font-family:'Caveat', cursive; font-weight:700; font-size:38px; line-height:1; margin:0 0 22px; transform:rotate(-0.6deg); color:var(--ink); }
 
-  .status{
-    display:none;
-    font-family:'Patrick Hand', cursive;
-    padding:12px 14px;
-    border-radius:4px;
-    font-size:16px;
-    margin-bottom:18px;
-    line-height:1.4;
-    border:2px dashed;
-  }
+  .status{ display:none; font-family:'Patrick Hand', cursive; padding:12px 14px; border-radius:4px; font-size:16px; margin-bottom:18px; line-height:1.4; border:2px dashed; }
   .status.error{ display:block; color:var(--error); border-color:var(--error); background:rgba(179,59,59,0.08); }
   .status.success{ display:block; color:var(--success); border-color:var(--success); background:rgba(62,122,76,0.08); }
 
   .field{ margin-bottom:24px; }
-  .field-label{
-    font-family:'Patrick Hand', cursive;
-    font-size:18px;
-    color:var(--ink);
-    margin-bottom:8px;
-    display:block;
-  }
-  .field-sub{
-    font-family:'Nunito', sans-serif;
-    font-size:12px;
-    color:var(--ink-light);
-    margin-top:5px;
-  }
+  .field-label{ font-family:'Patrick Hand', cursive; font-size:18px; color:var(--ink); margin-bottom:8px; display:block; }
+  .required-dot{ color:var(--error); }
+  .field-sub{ font-family:'Nunito', sans-serif; font-size:12px; color:var(--ink-light); margin-top:5px; }
 
-  /* category as washi tape toggle */
-  .tape-toggle{
-    display:flex;
-    gap:16px;
-  }
+  .tape-toggle{ display:flex; gap:16px; }
   .tape-toggle input{ position:absolute; opacity:0; }
-  .tape-btn{
-    font-family:'Patrick Hand', cursive;
-    font-size:17px;
-    padding:10px 18px 9px;
-    cursor:pointer;
-    color:var(--ink);
-    border:none;
-    box-shadow:1px 3px 4px rgba(0,0,0,0.18);
-    transform:rotate(-2deg);
-    transition:transform .12s, box-shadow .12s;
-  }
+  .tape-btn{ font-family:'Patrick Hand', cursive; font-size:17px; padding:10px 18px 9px; cursor:pointer; color:var(--ink); border:none; box-shadow:1px 3px 4px rgba(0,0,0,0.18); transform:rotate(-2deg); transition:transform .12s, box-shadow .12s; }
   .tape-btn.pink{ transform:rotate(2deg); }
   #kat-izin:checked ~ label[for="kat-izin"]{ background:var(--tape-blue-dark); transform:rotate(-3deg) translateY(-2px); box-shadow:2px 4px 6px rgba(0,0,0,0.25); }
   label[for="kat-izin"]{ background:var(--tape-blue); }
   #kat-pertanyaan:checked ~ label[for="kat-pertanyaan"]{ background:var(--tape-pink-dark); transform:rotate(3deg) translateY(-2px); box-shadow:2px 4px 6px rgba(0,0,0,0.25); }
   label[for="kat-pertanyaan"]{ background:var(--tape-pink); }
 
-  select, textarea{
-    width:100%;
-    background:transparent;
-    border:none;
-    border-bottom:2px solid var(--ink-light);
-    font-family:'Patrick Hand', cursive;
-    font-size:18px;
-    color:var(--ink);
-    padding:4px 2px 8px;
-  }
+  select, textarea{ width:100%; background:transparent; border:none; border-bottom:2px solid var(--ink-light); font-family:'Patrick Hand', cursive; font-size:18px; color:var(--ink); padding:4px 2px 8px; }
   select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23263349' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 4px center; }
+  select:disabled{ opacity:0.5; }
   textarea{ min-height:96px; resize:vertical; line-height:32px; }
   select:focus, textarea:focus{ outline:none; border-bottom-color:var(--ink); }
-  #minggu-field{ max-width:180px; }
+  #minggu-field{ max-width:200px; }
 
-  /* photo evidence — paperclip box */
-  .photo-box{
-    border:2px dashed var(--ink-light);
-    border-radius:6px;
-    padding:18px;
-    text-align:center;
-    position:relative;
-    background:rgba(255,255,255,0.35);
-  }
-  .photo-box input{
-    position:absolute; inset:0;
-    opacity:0; cursor:pointer;
-  }
-  .photo-box .clip-text{
-    font-family:'Patrick Hand', cursive;
-    font-size:17px;
-    color:var(--ink);
-  }
-  .photo-preview{
-    display:none;
-    margin-top:14px;
-  }
-  .photo-preview img{
-    max-width:160px;
-    border:6px solid #fff;
-    box-shadow:0 3px 8px rgba(0,0,0,0.3);
-    transform:rotate(-3deg);
-  }
+  .photo-box{ border:2px dashed var(--ink-light); border-radius:6px; padding:18px; text-align:center; position:relative; background:rgba(255,255,255,0.35); }
+  .photo-box input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .photo-box .clip-text{ font-family:'Patrick Hand', cursive; font-size:17px; color:var(--ink); }
+  .photo-preview{ display:none; margin-top:14px; }
+  .photo-preview img{ max-width:160px; border:6px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.3); transform:rotate(-3deg); }
 
-  .footer-bar{
-    position:fixed;
-    bottom:0; left:0; right:0;
-    padding:16px 20px calc(16px + env(safe-area-inset-bottom)) 58px;
-    z-index:3;
-  }
-  button#submitBtn{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:3px;
-    background:var(--highlight);
-    color:var(--ink);
-    font-family:'Caveat', cursive;
-    font-weight:700;
-    font-size:22px;
-    cursor:pointer;
-    box-shadow:2px 3px 6px rgba(0,0,0,0.25);
-    transform:rotate(-1deg);
-  }
-  button#submitBtn:disabled{ opacity:0.55; }
+  .footer-bar{ position:fixed; bottom:0; left:0; right:0; padding:16px 20px calc(16px + env(safe-area-inset-bottom)) 58px; z-index:3; }
+  button#submitBtn{ width:100%; padding:15px; border:none; border-radius:3px; background:var(--highlight); color:var(--ink); font-family:'Caveat', cursive; font-weight:700; font-size:22px; cursor:pointer; box-shadow:2px 3px 6px rgba(0,0,0,0.25); transform:rotate(-1deg); }
+  button#submitBtn:disabled{ opacity:0.55; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -215,9 +79,25 @@
   <div class="tape-label">📌 Formulir Mahasiswa</div>
   <h1>Izin & Pertanyaan</h1>
 
-  <div id="status" class="status"></div>
+  <div id="status" class="status" role="alert"></div>
 
   <form id="reportForm">
+    <div class="field">
+      <span class="field-label">Kelas <span class="required-dot">*</span></span>
+      <select id="kelas" name="kelas" required>
+        <option value="">— Pilih Kelas —</option>
+        <option value="Pagi">☀️ Pagi</option>
+        <option value="Siang">🌤️ Siang</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Nama Anda <span class="required-dot">*</span></span>
+      <select id="nim" name="nim" required disabled>
+        <option value="">— Pilih Kelas dulu —</option>
+      </select>
+    </div>
+
     <div class="field">
       <span class="field-label">Ini laporan tentang apa?</span>
       <div class="tape-toggle">
@@ -229,22 +109,22 @@
     </div>
 
     <div class="field" id="minggu-field">
-      <span class="field-label">Minggu ke berapa?</span>
-      <select id="minggu_ke" name="minggu_ke"></select>
+      <span class="field-label">Minggu ke berapa? <span class="required-dot">*</span></span>
+      <select id="minggu_ke" name="minggu_ke" required></select>
     </div>
 
     <div class="field">
-      <span class="field-label" id="keterangan-label">Ceritain alasannya...</span>
+      <span class="field-label" id="keterangan-label">Ceritain alasannya... <span class="required-dot">*</span></span>
       <textarea id="keterangan" name="keterangan" placeholder="Tulis di sini ya..." required></textarea>
     </div>
 
     <div class="field">
-      <span class="field-label">📎 Foto Bukti</span>
+      <span class="field-label" id="foto-label">📎 Foto Bukti <span class="required-dot" id="foto-required">*</span></span>
       <div class="photo-box">
         <input type="file" id="lampiran" name="lampiran" accept="image/*" capture="environment">
         <div class="clip-text" id="photoLabel">Tempel foto di sini (jepret langsung atau pilih dari galeri)</div>
       </div>
-      <div class="field-sub" id="photoHint">Untuk Izin: wajib lampirkan foto surat sakit/bukti. Untuk Pertanyaan: opsional, misal screenshot chat kelas.</div>
+      <div class="field-sub" id="photoHint">Wajib lampirkan foto surat sakit/bukti untuk Izin.</div>
       <div class="photo-preview" id="photoPreview"><img id="photoPreviewImg" src="" alt="Preview foto bukti"></div>
     </div>
   </form>
@@ -258,8 +138,216 @@
   tg.ready();
   tg.expand();
 
-  // GANTI dengan URL webhook n8n Modul 2 setelah workflow di-import & diaktifkan
+  // GANTI dengan Production URL dari node "Webhook Terima Form" di Workflow 2 (n8n)
   const WEBHOOK_URL = "https://n8n-ycuqer2jdob8.jkt6.sumopod.my.id/webhook/form-izin-pertanyaan";
+
+  // ======================================================================
+  // GANTI ROSTER DI BAWAH INI dengan daftar NIM + Nama asli dari sheet
+  // Data_Mahasiswa kamu. Format: { nim: "...", nama: "..." }
+  // Contoh 2 baris di bawah cuma placeholder, WAJIB diganti semua.
+  // ======================================================================
+  const ROSTER = {
+    "Pagi": [
+      { nim: "110122318", nama: "MUHAMMAD AKMAL" },
+      { nim: "110125001", nama: "FATAHILLAH TEGAR SUJOKO" },
+      { nim: "110125004", nama: "KHALID AL GHIFARI" },
+      { nim: "110125005", nama: "DAVA RASYA MUNFARIZ" },
+      { nim: "110125010", nama: "FANNY LARASYA PUTRI" },
+      { nim: "110125011", nama: "EKA RAMADHANI" },
+      { nim: "110125012", nama: "MUHAMAD AR ROYYAN" },
+      { nim: "110125013", nama: "AHMAD MIQDAD" },
+      { nim: "110125014", nama: "FAHRI SYAHRIZAL" },
+      { nim: "110125015", nama: "ADRIANSYAH ROMADHON" },
+      { nim: "110125017", nama: "LULU AMANDA" },
+      { nim: "110125018", nama: "KEYSHA WULANDARI NURAFITHA" },
+      { nim: "110125021", nama: "DAFFA HAFIZH FIRDAUS" },
+      { nim: "110125022", nama: "RAFA AZIZAH" },
+      { nim: "110125023", nama: "TEUKU MUHAMMAD DEVANDRA MUDA" },
+      { nim: "110125025", nama: "ASYA PANGESTI" },
+      { nim: "110125026", nama: "JAISYA MUHAMMAD TAQY" },
+      { nim: "110125027", nama: "MUHAMAD KHIJIB MOKOTEK" },
+      { nim: "110125028", nama: "INAYAH SAFITRI" },
+      { nim: "110125029", nama: "AHMAD ZAIDAN AL DZAKY" },
+      { nim: "110125031", nama: "MUHAMMAD SHAKA AUFA AL HAJAR" },
+      { nim: "110125032", nama: "AKBAR ARNAWA ADINATA" },
+      { nim: "110125038", nama: "CALLISTA NOVA INDRIANI" },
+      { nim: "110125039", nama: "RIDHO NURULLAH AHMAD" },
+      { nim: "110125043", nama: "MUHAMMAD ABDURROHMAN AZIZ AL'MUBAROK" },
+      { nim: "110125047", nama: "ANDRE GHAILAN PRATAMA" },
+      { nim: "110125049", nama: "AGUNG KURNIAWAN" },
+      { nim: "110125054", nama: "SYAQILA NURUSSYIFA" },
+      { nim: "110125055", nama: "SABILAH SYAHARANI" },
+      { nim: "110125057", nama: "AISYAH SABILA RAMADHANI" },
+      { nim: "110125058", nama: "HIRSHADIEN NUR ASHARI" },
+      { nim: "110125059", nama: "HILMAN NABIL ISKANDAR" },
+      { nim: "110125060", nama: "RAISHA KAMILA ZAHRA" },
+      { nim: "110125061", nama: "AGNIA SUNARDI" },
+      { nim: "110125065", nama: "ENDIH SAPUTRA" },
+      { nim: "110125069", nama: "CUT NAJWA AZZAHRA" },
+      { nim: "110125071", nama: "MUHAMMAD LUTHFI NURUL IMAN" },
+      { nim: "110125072", nama: "AMELIA APRILIANI" },
+      { nim: "110125075", nama: "ABDUL ROHMAN" },
+      { nim: "110125076", nama: "SHABRINA ALLYSA VATRANANDA" },
+      { nim: "110125077", nama: "SILFI MAHARANI" },
+      { nim: "110125078", nama: "RIZKA AMELIA" },
+      { nim: "110125079", nama: "MUHAMAD RIZKY JULIAN" },
+      { nim: "110125080", nama: "FATURRAHMAN SYAMIL" },
+      { nim: "110125083", nama: "FATIMAH AZZAHRA" },
+      { nim: "110125085", nama: "RAFIDH HAFIZ AZZAHRA" },
+      { nim: "110125088", nama: "SALSABILA" },
+      { nim: "110125091", nama: "AISYAH MUTIARA PUTRI. H" },
+      { nim: "110125093", nama: "SUCI NURKHOLIPAH" },
+      { nim: "110125095", nama: "MUHAMMAD FADLA AL FADHILAH" },
+      { nim: "110125098", nama: "MUHAMMAD FATHIN AL FATIH" },
+      { nim: "110125101", nama: "NAURA ISTI ZAHRA" },
+      { nim: "110125106", nama: "KAYLA AZZAHRA" },
+      { nim: "110125108", nama: "SYAMILA BASA YEVA" },
+      { nim: "110125112", nama: "LAURA AULIA PUTRI PILIANG" },
+      { nim: "110125113", nama: "ABDUL ROHMAN" },
+      { nim: "110125115", nama: "BILQIS AINIYYAH FATIN DOTULONG" },
+      { nim: "110125116", nama: "KHAYANA TANTRI" },
+      { nim: "110125119", nama: "MUHAMMAD EZRA FAIQ SAHLAN RIZKY" },
+      { nim: "110125120", nama: "TSAMARAH ZAHRA WIDODO" },
+      { nim: "110125123", nama: "AKBAR NUR HABIBI PUTRA SETIAWAN" },
+      { nim: "110125125", nama: "AZKA LUTHFI ASYAFI'I" },
+      { nim: "110125126", nama: "NAYA NAMIRA SALWA PUTRI" },
+      { nim: "110125130", nama: "ALWI RISKI MUJAHID SIREGAR" },
+      { nim: "110125131", nama: "AHMAD FAIQ ISMA'IL" },
+      { nim: "110125134", nama: "AKMAL HILMI ZAIDAAN" },
+      { nim: "110125135", nama: "DAFFA PUTRA PRATAMA" },
+      { nim: "110125137", nama: "LATIFAH IZZATI MUSYARIFA" },
+      { nim: "110125140", nama: "MUHAMAD FAIZ ZIKRI" },
+      { nim: "110125141", nama: "M. FADEL RAMADAN" },
+      { nim: "110125144", nama: "IRHAN HALOMOAN SIREGAR" },
+      { nim: "110125145", nama: "WIDI AMANDA PUTRI HARAHAP" },
+      { nim: "110125148", nama: "DESYFA INTANIA RAHLINA" },
+      { nim: "110125149", nama: "DZAKHWAN AUFA SAIF" },
+      { nim: "110125151", nama: "ASMAN SOLIHIN HASIBUAN" },
+      { nim: "110125152", nama: "NAZLA NABILA HIDAYAT LUBIS" },
+      { nim: "110125154", nama: "SITI AISYAH" },
+    ],
+    "Siang": [
+      { nim: "110225004", nama: "AFLAH NAUFAL HAADI" },
+      { nim: "110225005", nama: "MUHAMMAD FATHIR LUBIS" },
+      { nim: "110225007", nama: "RUDILOU TIWON" },
+      { nim: "110225010", nama: "MUHAMMAD FARRAZ WIBAWA" },
+      { nim: "110225016", nama: "MUHAMMAD HASBI RABBANI" },
+      { nim: "110225017", nama: "HAMMAD WILDAN HIDAYAT" },
+      { nim: "110225019", nama: "ALFATH DIO ANUGRAH" },
+      { nim: "110225021", nama: "MUHAMMAD RADIFAH HIBATILLAH" },
+      { nim: "110225022", nama: "FATHUDDIN WICAKSONO" },
+      { nim: "110225023", nama: "MUHAMMAD BASYARAHIL" },
+      { nim: "110225024", nama: "DIMAR RENANTHERA RIYADI" },
+      { nim: "110225026", nama: "ALFANDI PANCA SAPUTRA" },
+      { nim: "110225027", nama: "NUR ZAHRA SARI SAFITRI" },
+      { nim: "110225028", nama: "EKA NURVIANTORO" },
+      { nim: "110225032", nama: "HAIDAR GHAZI MUDZAKKIY PURWANDARU" },
+      { nim: "110225033", nama: "SANDI KURNIAWAN" },
+      { nim: "110225036", nama: "DZAKWAN ABDUR RASYID" },
+      { nim: "110225037", nama: "ARIA FATAH ANOM" },
+      { nim: "110225038", nama: "MUHAMMAD HILAL KAMIL" },
+      { nim: "110225040", nama: "ABDURRAHMAN AL FATIH" },
+      { nim: "110225041", nama: "SYAUQIYAH FALINA RAHMAN" },
+      { nim: "110225044", nama: "GHIFANA ADZKIA AHMAD" },
+      { nim: "110225045", nama: "ANGGUN AGUSTINA" },
+      { nim: "110225046", nama: "SAHRU RAMADOAN" },
+      { nim: "110225048", nama: "JUMRATUL NISAH" },
+      { nim: "110225049", nama: "TRISA DHIYA NASYWA" },
+      { nim: "110225057", nama: "ABDUL AZIZ ALFARIZI" },
+      { nim: "110225058", nama: "MUHAMMAD BINTANG SIREGAR" },
+      { nim: "110225059", nama: "NURAGUSTINA" },
+      { nim: "110225061", nama: "KHOLILAH FATMAWATI KOSWARA" },
+      { nim: "110225062", nama: "RENATA SAFELIA ANGGRAENI" },
+      { nim: "110225064", nama: "RIZKY PUTRI HSB" },
+      { nim: "110225065", nama: "LU'LU' NUR JIHAN" },
+      { nim: "110225066", nama: "IZZUDIEN AL FAQIH" },
+      { nim: "110225067", nama: "HANI SEPTIANI" },
+      { nim: "110225068", nama: "GUNTUR DWI SATRIAWAN" },
+      { nim: "110225072", nama: "FAJAR RIZKY ANDRIANSYAH" },
+      { nim: "110225074", nama: "LUTFI HANIF" },
+      { nim: "110225075", nama: "NABILA F ANDINA LUBIS" },
+      { nim: "110225076", nama: "ANDREAN JONATAN LALUAN" },
+      { nim: "110225078", nama: "ABDUL MUNIR" },
+      { nim: "110225083", nama: "DEDI KURNIA SIREGAR" },
+      { nim: "110225084", nama: "MULKI FAHRUDIEN" },
+      { nim: "110225085", nama: "ANDI REZKY BRILIAN MUBARAK" },
+      { nim: "110225086", nama: "KRISNA WIJAYA" },
+      { nim: "110225087", nama: "MUHAMAD RIZKY ARDIANSYAH" },
+      { nim: "110225088", nama: "ABDUL BASITH HILMY" },
+      { nim: "110225089", nama: "RIDHO ABDULLAH FATA" },
+      { nim: "110225092", nama: "SURYA PRADITA" },
+      { nim: "110225093", nama: "MAULANA ALIFIAN" },
+      { nim: "110225096", nama: "MUHAMAD RAFLY ZIDAN" },
+      { nim: "110225098", nama: "ARDYANZA SYAHBANI NOER APRIO" },
+      { nim: "110225099", nama: "MUHAMMAD SULTAN RIDHO" },
+      { nim: "110225100", nama: "ELSA NURMAULIDA" },
+      { nim: "110225102", nama: "UGROSENO DWI PRAKASTYO" },
+      { nim: "110225105", nama: "LU'LUUL MUKAROMAH" },
+      { nim: "110225107", nama: "MAULANA ABDUL AZIZ" },
+      { nim: "110225108", nama: "AHMAD HUSSEIN MUFAHIR" },
+      { nim: "110225109", nama: "RAFI AFRAND" },
+      { nim: "110225110", nama: "AZZAM FIKRI" },
+      { nim: "110225114", nama: "MUHAMMAD ZEIN" },
+      { nim: "110225115", nama: "AKMAL ADITYA LOKANANTA" },
+      { nim: "110225116", nama: "IRSYAD FARRAS AL FARISYI" },
+      { nim: "110225117", nama: "UMAR ABDUL AZIZ RABBANI" },
+      { nim: "110225118", nama: "ABDUL AZIZ AL PALEMBANI" },
+      { nim: "110225119", nama: "RIDHO ADDIN" },
+      { nim: "110225120", nama: "ZIQRI AKBAR ASHARI" },
+      { nim: "110225121", nama: "INDAH NURUL AYNI HASIBUAN" },
+      { nim: "110225122", nama: "MUHAMAD ABROR" },
+      { nim: "110225125", nama: "SERLI ANGGRAINI" },
+      { nim: "110225126", nama: "NURINTAN MUTIA NASUTION" },
+      { nim: "110225128", nama: "AZI SYAHRIJAL" },
+      { nim: "110225130", nama: "MADU AGNIA SYAHDU" },
+      { nim: "110225149", nama: "MUHAMMAD GIZA REIFAN JULIAN" },
+      { nim: "110225150", nama: "SALMA HANIYA RAHMA" },
+      { nim: "110225151", nama: "MUHAMMAD A'QIB HADZIQ" },
+      { nim: "110225152", nama: "HARITS ACHMAD QITAL" },
+      { nim: "110225153", nama: "MUHAMAD YUSUF FATHURROHMAN" },
+      { nim: "110225154", nama: "AVICENNA ZAKIY ZUHAIR" },
+      { nim: "110225155", nama: "ALIIFAH HUSNUL KHOTIMAH" },
+      { nim: "110225156", nama: "FAHRI MULYADI" },
+      { nim: "110225160", nama: "NICHA AMELIA SRG" },
+      { nim: "110225162", nama: "ZIKRA MAHKOTA HASAN" },
+      { nim: "110225163", nama: "DENI MAULANA" },
+      { nim: "110225164", nama: "MUMTAAZ ABDURRAHMAN" },
+      { nim: "110225165", nama: "DZAKI FASYA" },
+      { nim: "110225166", nama: "AJI HENDRAMAWAN" },
+      { nim: "110225167", nama: "REFALDI RAHMAN" },
+      { nim: "110225168", nama: "WAHYU IRAWAN SAPUTRA" },
+      { nim: "110225172", nama: "MUHAMMAD ILYAS ADITYARAHMAN" },
+      { nim: "110225173", nama: "AZZIDAN AL'FATIO SYACHPUTRA" },
+      { nim: "110225175", nama: "AHMAD FAHREZI" },
+      { nim: "110225176", nama: "LABIBAH NURRAHMAH" },
+      { nim: "110225180", nama: "RAFAN ASFA" },
+    ],
+  };
+  // ======================================================================
+
+  const kelasSelect = document.getElementById('kelas');
+  const nimSelect = document.getElementById('nim');
+
+  kelasSelect.addEventListener('change', () => {
+    const kelas = kelasSelect.value;
+    nimSelect.innerHTML = '';
+    if (!kelas || !ROSTER[kelas] || ROSTER[kelas].length === 0) {
+      nimSelect.innerHTML = '<option value="">— Pilih Kelas dulu —</option>';
+      nimSelect.disabled = true;
+      return;
+    }
+    nimSelect.disabled = false;
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '— Pilih Nama —';
+    nimSelect.appendChild(placeholder);
+    ROSTER[kelas].forEach(mhs => {
+      const opt = document.createElement('option');
+      opt.value = mhs.nim;
+      opt.textContent = `${mhs.nim} — ${mhs.nama}`;
+      nimSelect.appendChild(opt);
+    });
+  });
 
   const mingguSelect = document.getElementById('minggu_ke');
   for (let i = 1; i <= 14; i++) {
@@ -270,23 +358,23 @@
   }
 
   const katRadios = document.querySelectorAll('input[name="kategori"]');
-  const mingguField = document.getElementById('minggu-field');
   const keteranganLabel = document.getElementById('keterangan-label');
   const keteranganInput = document.getElementById('keterangan');
   const photoHint = document.getElementById('photoHint');
+  const fotoRequiredMark = document.getElementById('foto-required');
 
   function toggleFields() {
     const kategori = document.querySelector('input[name="kategori"]:checked').value;
     if (kategori === 'Pertanyaan') {
-      mingguField.style.display = 'block';
-      keteranganLabel.textContent = 'Tulis pertanyaannya...';
+      keteranganLabel.innerHTML = 'Tulis pertanyaannya... <span class="required-dot">*</span>';
       keteranganInput.placeholder = 'Pertanyaan yang Anda ajukan di kelas';
       photoHint.textContent = 'Opsional untuk Pertanyaan, misal screenshot chat kelas.';
+      fotoRequiredMark.style.display = 'none';
     } else {
-      mingguField.style.display = 'none';
-      keteranganLabel.textContent = 'Ceritain alasannya...';
+      keteranganLabel.innerHTML = 'Ceritain alasannya... <span class="required-dot">*</span>';
       keteranganInput.placeholder = 'Contoh: Sakit demam, ada surat dokter terlampir';
       photoHint.textContent = 'Wajib lampirkan foto surat sakit/bukti untuk Izin.';
+      fotoRequiredMark.style.display = 'inline';
     }
   }
   katRadios.forEach(r => r.addEventListener('change', toggleFields));
@@ -301,27 +389,25 @@
     if (!file) { photoPreview.style.display = 'none'; photoLabel.textContent = 'Tempel foto di sini (jepret langsung atau pilih dari galeri)'; return; }
     photoLabel.textContent = `✓ ${file.name}`;
     const reader = new FileReader();
-    reader.onload = e => {
-      photoPreviewImg.src = e.target.result;
-      photoPreview.style.display = 'block';
-    };
+    reader.onload = e => { photoPreviewImg.src = e.target.result; photoPreview.style.display = 'block'; };
     reader.readAsDataURL(file);
   });
 
   const statusEl = document.getElementById('status');
-  function showStatus(type, msg) {
-    statusEl.className = 'status ' + type;
-    statusEl.textContent = msg;
-  }
+  function showStatus(type, msg) { statusEl.className = 'status ' + type; statusEl.textContent = msg; }
 
   document.getElementById('submitBtn').addEventListener('click', async () => {
+    const kelas = kelasSelect.value;
+    const nim = nimSelect.value;
     const kategori = document.querySelector('input[name="kategori"]:checked').value;
     const keterangan = keteranganInput.value.trim();
     const mingguKe = mingguSelect.value;
     const lampiranFile = lampiranInput.files[0];
 
+    if (!kelas) { showStatus('error', 'Kelas wajib dipilih.'); return; }
+    if (!nim) { showStatus('error', 'Nama Anda wajib dipilih dari daftar.'); return; }
+    if (!mingguKe) { showStatus('error', 'Minggu ke- wajib dipilih.'); return; }
     if (!keterangan) { showStatus('error', 'Keterangan wajib diisi.'); return; }
-    if (kategori === 'Pertanyaan' && !mingguKe) { showStatus('error', 'Minggu ke- wajib dipilih.'); return; }
     if (kategori === 'Izin Ketidakhadiran' && !lampiranFile) { showStatus('error', 'Foto bukti wajib dilampirkan untuk Izin.'); return; }
 
     const btn = document.getElementById('submitBtn');
@@ -332,6 +418,8 @@
     try {
       const formData = new FormData();
       formData.append('initData', tg.initData);
+      formData.append('kelas', kelas);
+      formData.append('nim', nim);
       formData.append('kategori', kategori);
       formData.append('minggu_ke', mingguKe);
       formData.append('keterangan', keterangan);
