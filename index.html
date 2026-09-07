@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Catatan Kelas — Izin & Pertanyaan</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6EFDC;
+    --paper-line: #C7D6E3;
+    --margin-line: #E7A3A3;
+    --ink: #263349;
+    --ink-light: #66738A;
+    --tape-blue: #BEE0EE;
+    --tape-blue-dark: #7FAEC2;
+    --tape-pink: #F5C7CF;
+    --tape-pink-dark: #D98FA0;
+    --highlight: #FBD65D;
+    --error: #B33B3B;
+    --success: #3E7A4C;
+    --hole: #D9CFB2;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito', sans-serif;
+    background:
+      repeating-linear-gradient(
+        var(--paper) 0px, var(--paper) 31px,
+        var(--paper-line) 31px, var(--paper-line) 32px
+      );
+    background-color:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    padding:18px 20px 120px 58px;
+    position:relative;
+  }
+  /* spiral binding holes */
+  .holes{
+    position:fixed;
+    top:0; bottom:0; left:0;
+    width:34px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:center;
+    gap:34px;
+    padding-top:26px;
+    z-index:2;
+  }
+  .holes span{
+    width:14px; height:14px;
+    border-radius:50%;
+    background:var(--paper);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25), 0 0 0 2px var(--hole);
+  }
+  /* red margin line */
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:46px;
+    width:2px;
+    background:var(--margin-line);
+    z-index:1;
+  }
+
+  .tape-label{
+    display:inline-block;
+    font-family:'Caveat', cursive;
+    font-size:15px;
+    color:var(--ink-light);
+    background:var(--highlight);
+    padding:3px 12px;
+    transform:rotate(-2deg);
+    box-shadow:1px 2px 3px rgba(0,0,0,0.15);
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:38px;
+    line-height:1;
+    margin:0 0 22px;
+    transform:rotate(-0.6deg);
+    color:var(--ink);
+  }
+
+  .status{
+    display:none;
+    font-family:'Patrick Hand', cursive;
+    padding:12px 14px;
+    border-radius:4px;
+    font-size:16px;
+    margin-bottom:18px;
+    line-height:1.4;
+    border:2px dashed;
+  }
+  .status.error{ display:block; color:var(--error); border-color:var(--error); background:rgba(179,59,59,0.08); }
+  .status.success{ display:block; color:var(--success); border-color:var(--success); background:rgba(62,122,76,0.08); }
+
+  .field{ margin-bottom:24px; }
+  .field-label{
+    font-family:'Patrick Hand', cursive;
+    font-size:18px;
+    color:var(--ink);
+    margin-bottom:8px;
+    display:block;
+  }
+  .field-sub{
+    font-family:'Nunito', sans-serif;
+    font-size:12px;
+    color:var(--ink-light);
+    margin-top:5px;
+  }
+
+  /* category as washi tape toggle */
+  .tape-toggle{
+    display:flex;
+    gap:16px;
+  }
+  .tape-toggle input{ position:absolute; opacity:0; }
+  .tape-btn{
+    font-family:'Patrick Hand', cursive;
+    font-size:17px;
+    padding:10px 18px 9px;
+    cursor:pointer;
+    color:var(--ink);
+    border:none;
+    box-shadow:1px 3px 4px rgba(0,0,0,0.18);
+    transform:rotate(-2deg);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .tape-btn.pink{ transform:rotate(2deg); }
+  #kat-izin:checked ~ label[for="kat-izin"]{ background:var(--tape-blue-dark); transform:rotate(-3deg) translateY(-2px); box-shadow:2px 4px 6px rgba(0,0,0,0.25); }
+  label[for="kat-izin"]{ background:var(--tape-blue); }
+  #kat-pertanyaan:checked ~ label[for="kat-pertanyaan"]{ background:var(--tape-pink-dark); transform:rotate(3deg) translateY(-2px); box-shadow:2px 4px 6px rgba(0,0,0,0.25); }
+  label[for="kat-pertanyaan"]{ background:var(--tape-pink); }
+
+  select, textarea{
+    width:100%;
+    background:transparent;
+    border:none;
+    border-bottom:2px solid var(--ink-light);
+    font-family:'Patrick Hand', cursive;
+    font-size:18px;
+    color:var(--ink);
+    padding:4px 2px 8px;
+  }
+  select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23263349' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 4px center; }
+  textarea{ min-height:96px; resize:vertical; line-height:32px; }
+  select:focus, textarea:focus{ outline:none; border-bottom-color:var(--ink); }
+  #minggu-field{ max-width:180px; }
+
+  /* photo evidence — paperclip box */
+  .photo-box{
+    border:2px dashed var(--ink-light);
+    border-radius:6px;
+    padding:18px;
+    text-align:center;
+    position:relative;
+    background:rgba(255,255,255,0.35);
+  }
+  .photo-box input{
+    position:absolute; inset:0;
+    opacity:0; cursor:pointer;
+  }
+  .photo-box .clip-text{
+    font-family:'Patrick Hand', cursive;
+    font-size:17px;
+    color:var(--ink);
+  }
+  .photo-preview{
+    display:none;
+    margin-top:14px;
+  }
+  .photo-preview img{
+    max-width:160px;
+    border:6px solid #fff;
+    box-shadow:0 3px 8px rgba(0,0,0,0.3);
+    transform:rotate(-3deg);
+  }
+
+  .footer-bar{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    padding:16px 20px calc(16px + env(safe-area-inset-bottom)) 58px;
+    z-index:3;
+  }
+  button#submitBtn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:3px;
+    background:var(--highlight);
+    color:var(--ink);
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:22px;
+    cursor:pointer;
+    box-shadow:2px 3px 6px rgba(0,0,0,0.25);
+    transform:rotate(-1deg);
+  }
+  button#submitBtn:disabled{ opacity:0.55; }
+</style>
+</head>
+<body>
+
+  <div class="holes" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="tape-label">📌 Formulir Mahasiswa</div>
+  <h1>Izin & Pertanyaan</h1>
+
+  <div id="status" class="status"></div>
+
+  <form id="reportForm">
+    <div class="field">
+      <span class="field-label">Ini laporan tentang apa?</span>
+      <div class="tape-toggle">
+        <input type="radio" id="kat-izin" name="kategori" value="Izin Ketidakhadiran" checked>
+        <label class="tape-btn" for="kat-izin">🤒 Izin</label>
+        <input type="radio" id="kat-pertanyaan" name="kategori" value="Pertanyaan">
+        <label class="tape-btn pink" for="kat-pertanyaan">🙋 Pertanyaan</label>
+      </div>
+    </div>
+
+    <div class="field" id="minggu-field">
+      <span class="field-label">Minggu ke berapa?</span>
+      <select id="minggu_ke" name="minggu_ke"></select>
+    </div>
+
+    <div class="field">
+      <span class="field-label" id="keterangan-label">Ceritain alasannya...</span>
+      <textarea id="keterangan" name="keterangan" placeholder="Tulis di sini ya..." required></textarea>
+    </div>
+
+    <div class="field">
+      <span class="field-label">📎 Foto Bukti</span>
+      <div class="photo-box">
+        <input type="file" id="lampiran" name="lampiran" accept="image/*" capture="environment">
+        <div class="clip-text" id="photoLabel">Tempel foto di sini (jepret langsung atau pilih dari galeri)</div>
+      </div>
+      <div class="field-sub" id="photoHint">Untuk Izin: wajib lampirkan foto surat sakit/bukti. Untuk Pertanyaan: opsional, misal screenshot chat kelas.</div>
+      <div class="photo-preview" id="photoPreview"><img id="photoPreviewImg" src="" alt="Preview foto bukti"></div>
+    </div>
+  </form>
+
+  <div class="footer-bar">
+    <button id="submitBtn" type="button">Kirim Catatan ✏️</button>
+  </div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  // GANTI dengan URL webhook n8n Modul 2 setelah workflow di-import & diaktifkan
+  const WEBHOOK_URL = "https://n8n-ycuqer2jdob8.jkt6.sumopod.my.id/webhook/form-izin-pertanyaan";
+
+  const mingguSelect = document.getElementById('minggu_ke');
+  for (let i = 1; i <= 14; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `Minggu ${i}`;
+    mingguSelect.appendChild(opt);
+  }
+
+  const katRadios = document.querySelectorAll('input[name="kategori"]');
+  const mingguField = document.getElementById('minggu-field');
+  const keteranganLabel = document.getElementById('keterangan-label');
+  const keteranganInput = document.getElementById('keterangan');
+  const photoHint = document.getElementById('photoHint');
+
+  function toggleFields() {
+    const kategori = document.querySelector('input[name="kategori"]:checked').value;
+    if (kategori === 'Pertanyaan') {
+      mingguField.style.display = 'block';
+      keteranganLabel.textContent = 'Tulis pertanyaannya...';
+      keteranganInput.placeholder = 'Pertanyaan yang Anda ajukan di kelas';
+      photoHint.textContent = 'Opsional untuk Pertanyaan, misal screenshot chat kelas.';
+    } else {
+      mingguField.style.display = 'none';
+      keteranganLabel.textContent = 'Ceritain alasannya...';
+      keteranganInput.placeholder = 'Contoh: Sakit demam, ada surat dokter terlampir';
+      photoHint.textContent = 'Wajib lampirkan foto surat sakit/bukti untuk Izin.';
+    }
+  }
+  katRadios.forEach(r => r.addEventListener('change', toggleFields));
+  toggleFields();
+
+  const lampiranInput = document.getElementById('lampiran');
+  const photoLabel = document.getElementById('photoLabel');
+  const photoPreview = document.getElementById('photoPreview');
+  const photoPreviewImg = document.getElementById('photoPreviewImg');
+  lampiranInput.addEventListener('change', () => {
+    const file = lampiranInput.files[0];
+    if (!file) { photoPreview.style.display = 'none'; photoLabel.textContent = 'Tempel foto di sini (jepret langsung atau pilih dari galeri)'; return; }
+    photoLabel.textContent = `✓ ${file.name}`;
+    const reader = new FileReader();
+    reader.onload = e => {
+      photoPreviewImg.src = e.target.result;
+      photoPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  const statusEl = document.getElementById('status');
+  function showStatus(type, msg) {
+    statusEl.className = 'status ' + type;
+    statusEl.textContent = msg;
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const kategori = document.querySelector('input[name="kategori"]:checked').value;
+    const keterangan = keteranganInput.value.trim();
+    const mingguKe = mingguSelect.value;
+    const lampiranFile = lampiranInput.files[0];
+
+    if (!keterangan) { showStatus('error', 'Keterangan wajib diisi.'); return; }
+    if (kategori === 'Pertanyaan' && !mingguKe) { showStatus('error', 'Minggu ke- wajib dipilih.'); return; }
+    if (kategori === 'Izin Ketidakhadiran' && !lampiranFile) { showStatus('error', 'Foto bukti wajib dilampirkan untuk Izin.'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Mengirim...';
+    statusEl.style.display = 'none';
+
+    try {
+      const formData = new FormData();
+      formData.append('initData', tg.initData);
+      formData.append('kategori', kategori);
+      formData.append('minggu_ke', mingguKe);
+      formData.append('keterangan', keterangan);
+      if (lampiranFile) formData.append('lampiran', lampiranFile);
+
+      const res = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        showStatus('success', data.message || 'Catatan berhasil dikirim!');
+        setTimeout(() => tg.close(), 1800);
+      } else {
+        showStatus('error', data.message || 'Gagal mengirim. Coba lagi.');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Catatan ✏️';
+      }
+    } catch (err) {
+      showStatus('error', 'Terjadi kesalahan koneksi. Coba lagi.');
+      btn.disabled = false;
+      btn.textContent = 'Kirim Catatan ✏️';
+    }
+  });
+</script>
+</body>
+</html>
