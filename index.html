@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Catatan Kelas — Izin & Pertanyaan</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -65,9 +64,11 @@
   .photo-preview{ display:none; margin-top:14px; }
   .photo-preview img{ max-width:160px; border:6px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.3); transform:rotate(-3deg); }
 
-  .footer-bar{ position:fixed; bottom:0; left:0; right:0; padding:16px 20px calc(16px + env(safe-area-inset-bottom)) 58px; z-index:3; }
+  .footer-bar{ position:fixed; bottom:0; left:0; right:0; padding:16px 20px calc(16px + env(safe-area-inset-bottom)) 58px; z-index:3; background: linear-gradient(to top, var(--paper) 60%, transparent); }
   button#submitBtn{ width:100%; padding:15px; border:none; border-radius:3px; background:var(--highlight); color:var(--ink); font-family:'Caveat', cursive; font-weight:700; font-size:22px; cursor:pointer; box-shadow:2px 3px 6px rgba(0,0,0,0.25); transform:rotate(-1deg); }
   button#submitBtn:disabled{ opacity:0.55; cursor:not-allowed; }
+
+  .close-note{ text-align:center; font-family:'Patrick Hand', cursive; font-size:15px; color:var(--ink-light); margin-top:8px; }
 </style>
 </head>
 <body>
@@ -131,20 +132,16 @@
 
   <div class="footer-bar">
     <button id="submitBtn" type="button">Kirim Catatan ✏️</button>
+    <div class="close-note" id="closeNote" style="display:none;">Laporan sudah terkirim. Anda boleh menutup halaman ini.</div>
   </div>
 
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-
   // GANTI dengan Production URL dari node "Webhook Terima Form" di Workflow 2 (n8n)
   const WEBHOOK_URL = "https://n8n-ycuqer2jdob8.jkt6.sumopod.my.id/webhook/form-izin-pertanyaan";
 
   // ======================================================================
-  // GANTI ROSTER DI BAWAH INI dengan daftar NIM + Nama asli dari sheet
-  // Data_Mahasiswa kamu. Format: { nim: "...", nama: "..." }
-  // Contoh 2 baris di bawah cuma placeholder, WAJIB diganti semua.
+  // Roster mahasiswa TI01 Kamis Pagi & TI02 Kamis Siang.
+  // Kalau ada mahasiswa baru/pindah kelas, edit array di bawah ini lalu re-upload file ini.
   // ======================================================================
   const ROSTER = {
     "Pagi": [
@@ -417,7 +414,6 @@
 
     try {
       const formData = new FormData();
-      formData.append('initData', tg.initData);
       formData.append('kelas', kelas);
       formData.append('nim', nim);
       formData.append('kategori', kategori);
@@ -430,7 +426,9 @@
 
       if (res.ok && data.success) {
         showStatus('success', data.message || 'Catatan berhasil dikirim!');
-        setTimeout(() => tg.close(), 1800);
+        document.getElementById('reportForm').style.display = 'none';
+        btn.style.display = 'none';
+        document.getElementById('closeNote').style.display = 'block';
       } else {
         showStatus('error', data.message || 'Gagal mengirim. Coba lagi.');
         btn.disabled = false;
